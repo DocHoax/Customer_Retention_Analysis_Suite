@@ -117,9 +117,9 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 animate-fade-in min-w-0">
       {/* Persona Selection Panel (5 columns) */}
-      <div className="lg:col-span-4 bg-white rounded-xl p-6 border border-slate-100 shadow-sm space-y-6 flex flex-col justify-between">
+      <div className="xl:col-span-4 bg-white rounded-xl p-4 sm:p-6 border border-slate-100 shadow-sm space-y-6 flex flex-col justify-between min-w-0">
         <div className="space-y-5">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Sparkles className="w-5 h-5 text-indigo-600" />
@@ -174,7 +174,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
       </div>
 
       {/* Report Showcase Panel (8 columns) */}
-      <div className="lg:col-span-8 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col overflow-hidden min-h-[450px]">
+      <div className="xl:col-span-8 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col overflow-hidden min-h-[350px] min-w-0">
         {/* Header indicator */}
         <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
         </div>
 
         {/* Content canvas */}
-        <div className="flex-1 p-6 overflow-y-auto max-h-[600px] bg-slate-50/20">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto max-h-[600px] bg-slate-50/20 min-w-0">
           {renderFormattedReport(reportText)}
         </div>
       </div>

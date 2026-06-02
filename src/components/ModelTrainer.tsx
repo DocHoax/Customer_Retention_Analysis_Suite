@@ -97,9 +97,9 @@ export default function ModelTrainer({
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in min-w-0">
       {/* Retrain Controls / Metrics Title */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
         <div>
           <h3 className="font-display font-bold text-slate-800 text-lg flex items-center gap-1.5">
             <Cpu className="w-5 h-5 text-indigo-600" /> Model Performance comparison
@@ -109,7 +109,7 @@ export default function ModelTrainer({
         <button
           onClick={onRetrain}
           disabled={isLoading}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-indigo-700 transition-colors shadow-sm"
+          className="w-full lg:w-auto flex items-center justify-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-indigo-700 transition-colors shadow-sm"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           Recalculate Coefficients
@@ -130,7 +130,7 @@ export default function ModelTrainer({
           </div>
 
           {/* LR Metrics cards */}
-          <div className="grid grid-cols-4 gap-2 text-center">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 text-center">
             <div className="bg-slate-50 p-2.5 rounded border border-slate-100">
               <p className="text-xs text-slate-500 font-medium">Accuracy</p>
               <p className="font-mono text-base font-bold text-blue-600">{(logisticRegression.metrics.accuracy * 100).toFixed(0)}%</p>
@@ -176,7 +176,8 @@ export default function ModelTrainer({
             {/* Confusion Matrix */}
             <div>
               <p className="text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Calculated Confusion Matrix</p>
-              <div className="grid grid-cols-3 gap-1 font-mono text-[10px] text-center">
+              <div className="overflow-x-auto">
+                <div className="min-w-[540px] grid grid-cols-3 gap-1 font-mono text-[10px] text-center">
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-500 flex items-center justify-center">N = {customers.length}</div>
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-400">PREDICT RETAIN (0)</div>
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-400">PREDICT CHURN (1)</div>
@@ -200,6 +201,7 @@ export default function ModelTrainer({
                   <span className="block font-bold text-base">{logisticRegression.metrics.confusionMatrix.truePositive}</span>
                   True positive
                 </div>
+                </div>
               </div>
             </div>
           </div>
@@ -216,7 +218,7 @@ export default function ModelTrainer({
           </div>
 
           {/* DT Stats cards */}
-          <div className="grid grid-cols-4 gap-2 text-center">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 text-center">
             <div className="bg-slate-50 p-2.5 rounded border border-slate-100">
               <p className="text-xs text-slate-500 font-medium">Accuracy</p>
               <p className="font-mono text-base font-bold text-indigo-600">{(decisionTree.metrics.accuracy * 100).toFixed(0)}%</p>
@@ -246,7 +248,8 @@ export default function ModelTrainer({
             {/* Confusion Matrix */}
             <div>
               <p className="text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Calculated Confusion Matrix</p>
-              <div className="grid grid-cols-3 gap-1 font-mono text-[10px] text-center">
+              <div className="overflow-x-auto">
+                <div className="min-w-[540px] grid grid-cols-3 gap-1 font-mono text-[10px] text-center">
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-505 flex items-center justify-center">N = {customers.length}</div>
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-400">PREDICT RETAIN (0)</div>
                 <div className="p-2 border border-slate-100 font-semibold bg-slate-50 text-slate-400">PREDICT CHURN (1)</div>
@@ -270,6 +273,7 @@ export default function ModelTrainer({
                   <span className="block font-bold text-base">{decisionTree.metrics.confusionMatrix.truePositive}</span>
                   True positive
                 </div>
+                </div>
               </div>
             </div>
           </div>
@@ -280,19 +284,19 @@ export default function ModelTrainer({
       {/* Interactive Inference testing Contest */}
       {activeCustomer && (
         <div className="bg-white rounded-xl p-6 border border-slate-100 shadow-sm space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div>
               <span className="text-[10px] font-mono uppercase bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500">Live Computational Contest</span>
               <h4 className="font-display font-bold text-slate-800 mt-1">Single Customer Pathway Inference Testing</h4>
               <p className="text-xs text-slate-500">Select any customer from the cohort and watch both ML classification lines resolve the predictions in real time.</p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
               <label className="text-xs text-slate-500 font-medium">Test Subject:</label>
               <select
                 value={selectedCustId}
                 onChange={(e) => setSelectedCustId(e.target.value)}
-                className="border border-slate-200 rounded-lg text-xs px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-400 bg-white cursor-pointer font-semibold text-slate-700"
+                className="border border-slate-200 rounded-lg text-xs px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-400 bg-white cursor-pointer font-semibold text-slate-700 w-full sm:w-auto"
               >
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>

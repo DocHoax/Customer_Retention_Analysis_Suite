@@ -88,12 +88,12 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in min-w-0">
       {/* Visual Analytics Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         
         {/* Scatter Chart: Spending vs Login Activity */}
-        <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-100 shadow-sm space-y-4 min-w-0">
           <div>
             <span className="text-[10px] font-mono uppercase bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500">
               Exploratory Cluster Analysis
@@ -161,7 +161,7 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
                   verticalAlign="top" 
                   height={32}
                   content={() => (
-                    <div className="flex gap-4 justify-center text-xs pb-3 font-mono">
+                    <div className="flex flex-wrap gap-4 justify-center text-xs pb-3 font-mono">
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Retained Customers</span>
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Churned Customers</span>
                     </div>
@@ -173,7 +173,7 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
         </div>
 
         {/* Bar Chart: Churn Rate vs Support Complaint Counts */}
-        <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-100 shadow-sm space-y-4 min-w-0">
           <div>
             <span className="text-[10px] font-mono uppercase bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500">
               Lethal Churn Indicator
@@ -202,7 +202,7 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
                   verticalAlign="top" 
                   height={32}
                   content={() => (
-                    <div className="flex gap-4 justify-center text-xs pb-3 font-mono">
+                    <div className="flex flex-wrap gap-4 justify-center text-xs pb-3 font-mono">
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-blue-500" /> Safe Churn</span>
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-amber-500" /> Moderately At-Risk</span>
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-rose-500" /> Critically Vulnerable</span>
@@ -220,7 +220,7 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Cohort Density Area Chart (7 columns) */}
-        <div className="lg:col-span-7 bg-white rounded-xl p-5 border border-slate-100 shadow-sm space-y-4">
+        <div className="lg:col-span-7 bg-white rounded-xl p-4 sm:p-5 border border-slate-100 shadow-sm space-y-4 min-w-0">
           <div>
             <span className="text-[10px] font-mono uppercase bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500">
               Interaction Cohorts
@@ -254,7 +254,7 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
         </div>
 
         {/* Matrix Heatmap: Pearson Coefficients (5 columns) */}
-        <div className="lg:col-span-5 bg-white rounded-xl p-5 border border-slate-100 shadow-sm space-y-4 flex flex-col">
+        <div className="lg:col-span-5 bg-white rounded-xl p-4 sm:p-5 border border-slate-100 shadow-sm space-y-4 flex flex-col min-w-0">
           <div>
             <span className="text-[10px] font-mono uppercase bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500">
               Pearson’s Coefficient Relationship
@@ -265,39 +265,41 @@ export default function ExploratoryCharts({ customers, correlationMatrix }: Expl
 
           <div className="flex-1 flex flex-col justify-center">
             {/* The heat matrix table */}
-            <div className="grid grid-cols-7 gap-1 font-mono text-[9px]">
-              {/* Header spaces */}
-              <div className="border border-transparent" />
-              {uniqueX.map((ux, i) => (
-                <div key={i} className="font-bold text-slate-500 text-center uppercase tracking-tighter truncate" title={ux}>
-                  {ux}
-                </div>
-              ))}
-
-              {/* Grid rows */}
-              {uniqueY.map((uy, yIdx) => (
-                <React.Fragment key={yIdx}>
-                  <div className="font-bold text-slate-550 text-left self-center truncate uppercase tracking-tighter pr-1" title={uy}>
-                    {uy}
+            <div className="overflow-x-auto pb-2">
+              <div className="grid min-w-[640px] grid-cols-7 gap-1 font-mono text-[9px]">
+                {/* Header spaces */}
+                <div className="border border-transparent" />
+                {uniqueX.map((ux, i) => (
+                  <div key={i} className="font-bold text-slate-500 text-center uppercase tracking-tighter truncate" title={ux}>
+                    {ux}
                   </div>
-                  {uniqueX.map((ux, xIdx) => {
-                    const match = correlationMatrix.find(item => item.x === ux && item.y === uy);
-                    const val = match ? match.val : 0;
-                    return (
-                      <div 
-                        key={`${yIdx}-${xIdx}`} 
-                        className={`h-8 flex items-center justify-center font-bold font-mono text-center rounded border border-white/50 transition-all shadow-sm ${getHeatColor(val)}`}
-                        title={`${uy} vs ${ux}: correlation is ${val}`}
-                      >
-                        {val >= 0 ? `+${val.toFixed(1)}` : val.toFixed(1)}
-                      </div>
-                    );
-                  })}
-                </React.Fragment>
-              ))}
+                ))}
+
+                {/* Grid rows */}
+                {uniqueY.map((uy, yIdx) => (
+                  <React.Fragment key={yIdx}>
+                    <div className="font-bold text-slate-550 text-left self-center truncate uppercase tracking-tighter pr-1" title={uy}>
+                      {uy}
+                    </div>
+                    {uniqueX.map((ux, xIdx) => {
+                      const match = correlationMatrix.find(item => item.x === ux && item.y === uy);
+                      const val = match ? match.val : 0;
+                      return (
+                        <div 
+                          key={`${yIdx}-${xIdx}`} 
+                          className={`h-8 flex items-center justify-center font-bold font-mono text-center rounded border border-white/50 transition-all shadow-sm ${getHeatColor(val)}`}
+                          title={`${uy} vs ${ux}: correlation is ${val}`}
+                        >
+                          {val >= 0 ? `+${val.toFixed(1)}` : val.toFixed(1)}
+                        </div>
+                      );
+                    })}
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
             
-            <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono mt-4 pt-4 border-t border-slate-100">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-[10px] text-slate-400 font-mono mt-4 pt-4 border-t border-slate-100">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-blue-500" /> Negative Correlation</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-slate-50 border border-slate-200" /> Neutral</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-rose-500" /> Positive Correlation</span>

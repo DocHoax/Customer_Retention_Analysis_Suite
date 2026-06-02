@@ -133,33 +133,33 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-[#ededed] flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-[#0a0a0b] text-[#ededed] flex flex-col font-sans select-none overflow-x-hidden">
       
       {/* Universal Institutional Header */}
-      <header className="bg-[#0a0a0b]/80 border-b border-[#262626] py-4 px-6 sticky top-0 z-30 shadow-sm backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <header className="bg-[#0a0a0b]/80 border-b border-[#262626] py-3 sm:py-4 px-4 sm:px-6 sticky top-0 z-30 shadow-sm backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
           
           {/* Logo & Lab branding */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md relative overflow-hidden">
               <GraduationCap className="w-5.5 h-5.5 relative z-10" />
               <div className="absolute right-0 bottom-0 w-6 h-6 bg-white/10 rounded-full blur-sm" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[10px] uppercase tracking-widest bg-blue-950 text-blue-400 border border-blue-900 font-bold px-1.5 py-0.5 rounded font-mono">
                   LASUSTECH CS LAB
                 </span>
                 <span className="text-[10px] text-[#a1a1a1] font-mono">r-220303010074</span>
               </div>
-              <h2 className="font-display font-bold text-white tracking-tight text-sm md:text-base">
+              <h2 className="font-display font-bold text-white tracking-tight text-sm md:text-base break-words">
                 BSc Customer Retention Analytics Suite
               </h2>
             </div>
           </div>
 
           {/* Quick Stats overview badge bar */}
-          <div className="flex items-center gap-4 text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-mono w-full lg:w-auto justify-start lg:justify-end">
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#161618] border border-[#262626] rounded-lg">
               <Database className="w-3.5 h-3.5 text-[#a1a1a1]" />
               <span className="text-[#a1a1a1]">Dataset Size:</span>
@@ -181,39 +181,39 @@ export default function App() {
       </header>
 
       {/* Primary Navigation Tabs row */}
-      <section className="bg-[#161618] text-[#a1a1a1] border-b border-[#262626] py-1 px-4">
-        <div className="max-w-7xl mx-auto flex overflow-x-auto gap-1 scrollbar-none">
+      <section className="bg-[#161618] text-[#a1a1a1] border-b border-[#262626] py-1 px-2 sm:px-4">
+        <div className="max-w-7xl mx-auto flex overflow-x-auto gap-1 scrollbar-none whitespace-nowrap">
           <button
             onClick={() => setActiveTab('proposal')}
-            className={`px-4 py-3 flex items-center gap-2 text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'proposal' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 text-[11px] sm:text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${activeTab === 'proposal' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
           >
             <BookOpen className="w-4 h-4" />
             1. Thesis Overview
           </button>
           <button
             onClick={() => setActiveTab('simulator')}
-            className={`px-4 py-3 flex items-center gap-2 text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'simulator' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 text-[11px] sm:text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${activeTab === 'simulator' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
           >
             <Database className="w-4 h-4" />
             2. Customer Simulator
           </button>
           <button
             onClick={() => setActiveTab('eda')}
-            className={`px-4 py-3 flex items-center gap-2 text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'eda' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 text-[11px] sm:text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${activeTab === 'eda' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
           >
             <LineChart className="w-4 h-4" />
             3. Behavior EDA Charts
           </button>
           <button
             onClick={() => setActiveTab('trainer')}
-            className={`px-4 py-3 flex items-center gap-2 text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'trainer' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 text-[11px] sm:text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${activeTab === 'trainer' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
           >
             <Cpu className="w-4 h-4" />
             4. ML Trainer & Contour
           </button>
           <button
             onClick={() => setActiveTab('ai')}
-            className={`px-4 py-3 flex items-center gap-2 text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'ai' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 text-[11px] sm:text-xs font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${activeTab === 'ai' ? 'text-white border-blue-500 bg-white/5 font-semibold' : 'border-transparent hover:text-slate-200 hover:bg-white/5'}`}
           >
             <Sparkles className="w-4 h-4 text-purple-400" />
             5. AI Advisory Report
@@ -222,7 +222,7 @@ export default function App() {
       </section>
 
       {/* Main active Tab Canvas area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-5 md:px-6 py-6 sm:py-8">
         {isLoading && !customers.length && (
           <div className="flex flex-col items-center justify-center py-24 space-y-4">
             <div className="w-12 h-12 border-4 border-[#262626] border-t-blue-500 rounded-full animate-spin" />
@@ -303,8 +303,8 @@ export default function App() {
       </main>
 
       {/* Academic Footer */}
-      <footer className="bg-[#161618] border-t border-[#262626] py-6 px-6 mt-12">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-[#a1a1a1]">
+      <footer className="bg-[#161618] border-t border-[#262626] py-6 px-4 sm:px-6 mt-12">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xs font-mono text-[#a1a1a1]">
           <div>
             <p className="font-sans font-semibold text-[#ededed]">Lagos State University of Science and Technology (LASUSTECH)</p>
             <p>Department of Computer Science — BSc Project Proposal Interface © 2026</p>

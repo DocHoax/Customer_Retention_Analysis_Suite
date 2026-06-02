@@ -45,9 +45,9 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
   const churnPercentage = customers.length > 0 ? ((totalChurned / customers.length) * 100).toFixed(1) : '0';
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in min-w-0">
       {/* Simulation Controller (4 columns in large screen) */}
-      <div className="lg:col-span-4 bg-[#161618] rounded-xl p-6 border border-[#262626] space-y-6">
+      <div className="lg:col-span-4 bg-[#161618] rounded-xl p-4 sm:p-6 border border-[#262626] space-y-6 min-w-0">
         <div className="flex items-center gap-2 border-b border-[#262626] pb-3">
           <Sliders className="w-5 h-5 text-blue-500" />
           <h3 className="font-display text-lg font-bold text-white">Simulation Variables</h3>
@@ -59,7 +59,7 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-xs">
               <label className="font-semibold text-[#ededed]">Sample Population Size</label>
               <span className="font-mono text-blue-400 font-bold bg-blue-950/40 border border-blue-900/30 px-1.5 py-0.5 rounded text-[11px]">{count} profiles</span>
             </div>
@@ -78,7 +78,7 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-xs">
               <label className="font-semibold text-[#ededed]">Complaint Churn Severity</label>
               <span className="font-mono text-cyan-400 font-bold bg-cyan-950/40 border border-cyan-900/30 px-1.5 py-0.5 rounded text-[11px]">{urgency.toFixed(1)}x</span>
             </div>
@@ -98,7 +98,7 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-xs">
               <label className="font-semibold text-[#ededed]">Retention Reward coverage</label>
               <span className="font-mono text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-900/30 px-1.5 py-0.5 rounded text-[11px]">{Math.floor(discountRatio * 100)}%</span>
             </div>
@@ -118,7 +118,7 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-xs">
               <label className="font-semibold text-[#ededed]">Average Tenure Expected</label>
               <span className="font-mono text-purple-400 font-bold bg-purple-950/40 border border-purple-900/30 px-1.5 py-0.5 rounded text-[11px]">{tenure} months</span>
             </div>
@@ -160,15 +160,15 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
       </div>
 
       {/* Database Explorer Grid (8 columns) */}
-      <div className="lg:col-span-8 bg-[#161618] rounded-xl border border-[#262626] flex flex-col overflow-hidden">
+      <div className="lg:col-span-8 bg-[#161618] rounded-xl border border-[#262626] flex flex-col overflow-hidden min-w-0">
         {/* Top filter bar */}
-        <div className="p-4 bg-[#0a0a0b] border-b border-[#262626] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        <div className="p-4 bg-[#0a0a0b] border-b border-[#262626] flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
             <h3 className="font-display font-bold text-white text-base">Preprocessing Data Ingestion Log</h3>
             <span className="text-xs text-[#a1a1a1] font-mono">({filteredCustomers.length} visible)</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <div className="relative">
               <Search className="w-4 h-4 text-[#a1a1a1] absolute left-2.5 top-2.5" />
               <input
@@ -176,14 +176,14 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
                 placeholder="Search by name/id..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 border border-[#262626] rounded-lg text-xs w-44 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-[#0a0a0b] text-[#ededed]"
+                className="pl-8 pr-3 py-1.5 border border-[#262626] rounded-lg text-xs w-full sm:w-44 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-[#0a0a0b] text-[#ededed]"
               />
             </div>
 
             <select
               value={churnFilter}
               onChange={(e) => setChurnFilter(e.target.value as any)}
-              className="border border-[#262626] rounded-lg text-xs px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-[#0a0a0b] text-[#ededed] cursor-pointer"
+              className="border border-[#262626] rounded-lg text-xs px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-[#0a0a0b] text-[#ededed] cursor-pointer w-full sm:w-auto"
             >
               <option value="all">All statuses</option>
               <option value="retained">Retained (0)</option>
@@ -192,8 +192,62 @@ export default function DataSimulator({ customers, onSimulate, isLoading }: Data
           </div>
         </div>
 
+        {/* Mobile card view */}
+        <div className="flex-1 min-h-[400px] md:hidden overflow-y-auto p-4 space-y-3">
+          {filteredCustomers.length === 0 ? (
+            <div className="text-center py-10 text-[#a1a1a1] italic text-xs">No matching records. Adjust search query or filters.</div>
+          ) : (
+            filteredCustomers.map((c) => (
+              <div key={c.id} className="rounded-xl border border-[#262626] bg-[#0a0a0b] p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-[#a1a1a1] font-mono">Customer</p>
+                    <p className="font-semibold text-white truncate">{c.name}</p>
+                    <p className="text-[11px] font-mono text-[#a1a1a1]">{c.id}</p>
+                  </div>
+                  {c.churnStatus === 1 ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-950/40 text-rose-400 border border-rose-900/30 font-mono shrink-0">
+                      <AlertTriangle className="w-2.5 h-2.5" /> Churned
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 font-mono shrink-0">
+                      <CheckCircle className="w-2.5 h-2.5" /> Active
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-[#a1a1a1]">
+                  <div className="rounded-lg border border-[#262626] bg-[#161618] p-2">
+                    <p className="text-[10px] uppercase text-[#707070]">Purchase</p>
+                    <p className="text-[#ededed] font-semibold">{c.purchaseFrequency}</p>
+                  </div>
+                  <div className="rounded-lg border border-[#262626] bg-[#161618] p-2">
+                    <p className="text-[10px] uppercase text-[#707070]">Spend</p>
+                    <p className="text-[#ededed] font-semibold">${c.spendingBehavior}</p>
+                  </div>
+                  <div className="rounded-lg border border-[#262626] bg-[#161618] p-2">
+                    <p className="text-[10px] uppercase text-[#707070]">Logins</p>
+                    <p className="text-[#ededed] font-semibold">{c.loginActivity}d</p>
+                  </div>
+                  <div className="rounded-lg border border-[#262626] bg-[#161618] p-2">
+                    <p className="text-[10px] uppercase text-[#707070]">Complaints</p>
+                    <p className="text-[#ededed] font-semibold">{c.complaintsCount}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] font-mono text-[#a1a1a1]">
+                  <span>{c.tenureMonths} months tenure</span>
+                  <span className={c.hasDiscountApplied ? 'text-emerald-400' : 'text-[#707070]'}>
+                    {c.hasDiscountApplied ? 'Discount applied' : 'Standard price'}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
         {/* Database table view */}
-        <div className="flex-1 overflow-x-auto min-h-[400px]">
+        <div className="hidden md:block flex-1 overflow-x-auto min-h-[400px]">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[#0a0a0b] text-[#a1a1a1] uppercase tracking-wider font-mono text-[10px] border-b border-[#262626]">
