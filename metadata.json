@@ -1,0 +1,6 @@
+{
+  "name": "BSc Customer Retention Analytics Suite",
+  "description": "An interactive research-grade data analysis suite exploring user behavior, churn predictive models, and product decision guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
