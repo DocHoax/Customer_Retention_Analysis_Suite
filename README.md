@@ -35,14 +35,31 @@ The platform is designed to bridge the gap between abstract machine learning the
 
 ---
 
-## ⚙️ How It Works
+## ⚙️ How It Works & Mathematical Formulations
 
-1. **Cohort Simulation**: A stochastic cohort generator calculates churn probabilities for each profile using a sigmoid logistic function approximation:
-   $$z = \beta_0 + \beta_1(\text{Logins}) + \beta_2(\text{Purchases}) + \beta_3(\text{Complaints}) + \beta_4(\text{Tenure}) + \beta_5(\text{Discount})$$
-2. **Local Model Training**:
-   - **Logistic Regression**: Runs batch Gradient Descent in the browser to optimize coefficients for purchase frequency, spend, login activity, and complaints count.
-   - **Decision Tree**: Builds a depth-3 classification tree using Gini Impurity minimization to establish conditional decision logic.
-3. **Advisory Report Generation**: A rule-based parser reads the resulting model weights and constructs tailored recommendations based on the primary churn driver.
+### 1. Cohort Simulation
+A stochastic cohort generator calculates churn probabilities for each profile using a sigmoid logistic function approximation:
+$$z = \beta_0 + \beta_1(\text{Logins}) + \beta_2(\text{Purchases}) + \beta_3(\text{Complaints}) + \beta_4(\text{Tenure}) + \beta_5(\text{Discount})$$
+
+The final churn state is assigned as:
+$$\text{Churn Status} = \begin{cases} 1 & \text{if } \frac{1}{1 + e^-z} \ge 0.55 \\ 0 & \text{otherwise} \end{cases}$$
+
+### 2. Local Model Training Algorithms
+- **Logistic Regression (Batch Gradient Descent)**:
+  Features are first normalized using Standard Scaling to ensure convergence stability:
+  $$X_{\text{scaled}} = \frac{X - \mu}{\sigma}$$
+  Weights are updated iteratively across $epochs$ using the gradient of the Binary Cross-Entropy loss:
+  $$W_j := W_j - \frac{\alpha}{m} \sum_{i=1}^m \left( \sigma(W^T x^{(i)} + b) - y^{(i)} \right) x_j^{(i)}$$
+  $$b := b - \frac{\alpha}{m} \sum_{i=1}^m \left( \sigma(W^T x^{(i)} + b) - y^{(i)} \right)$$
+
+- **Decision Tree (Gini Impurity Splits)**:
+  Constructs a depth-3 classification tree. At each node, the algorithm searches for a feature and threshold value that splits the data to maximize the **Gini Gain** (Information Gain):
+  $$I_G(S) = 1 - (p_{\text{retained}}^2 + p_{\text{churned}}^2)$$
+  $$\text{Gain} = I_G(S) - \left( \frac{|S_{\text{left}}|}{|S|} I_G(S_{\text{left}}) + \frac{|S_{\text{right}}|}{|S|} I_G(S_{\text{right}}) \right)$$
+
+- **Pearson Correlation Coefficients**:
+  Calculates linear correlation pairs between behavioral variables:
+  $$r_{xy} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2 \sum_{i=1}^n (y_i - \bar{y})^2}}$$
 
 ---
 
@@ -54,7 +71,53 @@ The platform is designed to bridge the gap between abstract machine learning the
 
 ---
 
-## 💡 Architecture & Tech Stack
+## 📁 File Structure & Directory Tree
+
+```text
+Customer_Retention_Analysis_Suite/
+├── .vercel/               # Vercel deployment link configurations
+├── api/                   # Serverless backend endpoints
+│   ├── customers/         # Cohort data handling
+│   │   ├── index.ts       # Baseline cohort provider
+│   │   └── simulate.ts    # Stochastic simulation generator
+│   ├── _shared.ts         # Shared controllers & prompts
+│   ├── analyze-models.ts  # ML model analysis dispatcher
+│   └── health.ts          # Server check route
+├── src/                   # React SPA codebase
+│   ├── components/        # Modularity components
+│   │   ├── AIConsultant.tsx     # Analytical Advisor layout
+│   │   ├── DataSimulator.tsx    # Cohort configuration sliders
+│   │   ├── ExploratoryCharts.tsx# Scatter plots and Heatmaps
+│   │   ├── ModelTrainer.tsx     # Inference & confusion matrices
+│   │   └── ProposalOverview.tsx # LASUSTECH proposal metadata layout
+│   ├── utils/
+│   │   └── math.ts        # Math engines (Logistic Regression, Gini Tree, Pearson)
+│   ├── App.tsx            # Core context, routers, & API fallbacks
+│   ├── index.css          # Design system stylesheet
+│   ├── main.tsx           # React mounting controller
+│   ├── mockData.ts        # Baseline cohorts & stochastic names dictionary
+│   └── types.ts           # Type bindings
+├── vercel.json            # Deployment routing
+├── vite.config.ts         # Vite bundler rules
+├── tsconfig.json          # TypeScript definitions
+├── package.json           # Task scripts & dependency configurations
+└── README.md              # Documentation
+```
+
+---
+
+## 🔌 API Endpoints Reference
+
+| Endpoint | Method | Payload Parameters | Response JSON |
+| :--- | :--- | :--- | :--- |
+| `/api/health` | `GET` | None | `{ "status": "healthy", "databaseSize": 30 }` |
+| `/api/customers` | `GET` | None | `{ "success": true, "customers": [...] }` |
+| `/api/customers/simulate` | `POST` | `{ "count": 35, "complaintUrgency": 1.2, "retentionDiscountRatio": 0.5, "avgTenure": 12 }` | `{ "success": true, "message": "...", "customers": [...] }` |
+| `/api/analyze-models` | `POST` | `{ "customers": [...] }` | `{ "success": true, "logisticRegression": {...}, "decisionTree": {...}, "correlationMatrix": [...] }` |
+
+---
+
+## 🛠️ Architecture & Tech Stack
 
 ### 1. Frontend (Client-Side)
 - **Framework**: React 19 & TypeScript.
@@ -67,11 +130,7 @@ The platform is designed to bridge the gap between abstract machine learning the
 ### 2. Backend (Simulated Microservices Layer)
 To make the application robust and production-ready, it features a dual-layer architecture. While it runs fully client-side as an offline-first fallback, it also includes Vercel Serverless Function endpoints:
 - **Server Framework**: Express.js (Node.js runtime).
-- **API Endpoints**:
-  - `GET /api/health` — Service status.
-  - `GET /api/customers` — Fetches baseline cohort profiles.
-  - `POST /api/customers/simulate` — Re-runs the stochastic cohort generator.
-  - `POST /api/analyze-models` — Trains the regression and tree classifiers.
+- **Compilation rules**: The backend uses Vercel serverless function compilers pointing to TypeScript entry points under the `/api` directory.
 
 ---
 
