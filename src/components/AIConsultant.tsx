@@ -42,7 +42,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
       setErrorMessage('');
       await onGenerateReport(activePersona.instruction);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Connecting to Gemini failed. Please set up GEMINI_API_KEY.');
+      setErrorMessage(err.message || 'Generating report failed.');
     }
   };
 
@@ -51,7 +51,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
     if (!text) {
       return (
         <div className="text-center py-12 text-slate-400 italic font-mono text-xs">
-          Press "Generate Analytical Dissertation Insights" below to query the Gemini-3.5-flash consultant against the active cohort metrics.
+          Press "Generate Analytical Advisory Report" below to evaluate the automated consultant against the active cohort metrics.
         </div>
       );
     }
@@ -88,7 +88,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
             const parts = content.split('**');
             return (
               <li key={idx} className="list-none pl-6 relative text-slate-600 mt-1.5 flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-505 border border-indigo-400 shrink-0 mt-2" />
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 border border-indigo-400 shrink-0 mt-2" />
                 <span>
                   {parts.map((part, pIdx) => (
                     pIdx % 2 === 1 ? <strong key={pIdx} className="font-bold text-slate-800">{part}</strong> : part
@@ -123,11 +123,11 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
         <div className="space-y-5">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Sparkles className="w-5 h-5 text-indigo-600" />
-            <h3 className="font-display text-lg font-bold text-slate-900 font-display">Gemini Consultant</h3>
+            <h3 className="font-display text-lg font-bold text-slate-900 font-display">Analytical Advisor</h3>
           </div>
 
           <p className="text-xs text-slate-500 leading-relaxed">
-            Query the server-side Gemini 3.5 model. The model automatically ingests your active cohort size, correlation outputs, and regression coefficients to construct customized advice.
+            Compute-driven analytical advisor. The system automatically ingests your active cohort size, correlation outputs, and regression coefficients to construct customized dissertation advice.
           </p>
 
           <div className="space-y-3">
@@ -161,7 +161,7 @@ export default function AIConsultant({ onGenerateReport, reportText, isLoading }
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-semibold text-sm rounded-lg shadow-sm transition-colors cursor-pointer"
           >
             {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            {isLoading ? 'Synthesizing...' : 'Generate Dissertation Report'}
+            {isLoading ? 'Synthesizing...' : 'Generate Advisory Report'}
           </button>
 
           {errorMessage && (

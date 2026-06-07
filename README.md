@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Customer Retention Analysis Suite
 
-# Run and deploy your AI Studio app
+This repository contains a Vite frontend and Vercel-ready API routes for customer retention analysis, simulation, model training, and automated cohort reporting.
 
-This contains everything you need to run your app locally.
+## Local Development
 
-View your app in AI Studio: https://ai.studio/apps/9243b12b-4c46-4f7b-bfd1-2ce8025782bc
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Start the local server:
    `npm run dev`
+
+## Vercel Deployment
+
+The repo is already structured for Vercel with `/api` serverless functions and a `vercel.json` configuration.
+
+1. Push the repository to GitHub.
+2. Import the repo into Vercel.
+3. Keep the default build settings or use the values in `vercel.json`:
+   - Build Command: `npm run vercel-build`
+   - Output Directory: `dist`
+4. Deploy.
+
+## Notes
+
+- The simulation and model-analysis endpoints are stateless on Vercel. The frontend sends the active customer dataset back to the API when recalculating models or generating the advisory report.
+- If you want persistent server-side state between sessions, add a database or KV store later.

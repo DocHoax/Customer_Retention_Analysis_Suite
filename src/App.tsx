@@ -6,10 +6,12 @@ import ExploratoryCharts from './components/ExploratoryCharts.tsx';
 import ModelTrainer from './components/ModelTrainer.tsx';
 import AIConsultant from './components/AIConsultant.tsx';
 import { Network, Database, LineChart, Cpu, Sparkles, BookOpen, GraduationCap, FlameKindling, Info } from 'lucide-react';
+import { INITIAL_CUSTOMERS, generateSimulatedDataset } from './mockData';
+import { trainLogisticRegression, trainDecisionTree, calculateCorrelationMatrix, generateAdvisoryReport } from './utils/math';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'proposal' | 'simulator' | 'eda' | 'trainer' | 'ai'>('proposal');
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>(INITIAL_CUSTOMERS);
   const [isLoading, setIsLoading] = useState(false);
   const [isModelsLoading, setIsModelsLoading] = useState(false);
 
@@ -18,35 +20,42 @@ export default function App() {
     weights: LogisticRegressionWeights;
     metrics: ModelMetrics;
     predictions: Customer[];
-  } | null>(null);
+  } | null>(() => trainLogisticRegression(INITIAL_CUSTOMERS, 0.15, 200));
 
   const [decisionTree, setDecisionTree] = useState<{
     root: DecisionTreeRules;
     metrics: ModelMetrics;
     predictions: Customer[];
-  } | null>(null);
+  } | null>(() => trainDecisionTree(INITIAL_CUSTOMERS, 3));
 
-  const [correlationMatrix, setCorrelationMatrix] = useState<{ x: string; y: string; val: number }[]>([]);
+  const [correlationMatrix, setCorrelationMatrix] = useState<{ x: string; y: string; val: number }[]>(() =>
+    calculateCorrelationMatrix(INITIAL_CUSTOMERS)
+  );
   const [reportText, setReportText] = useState('');
 
   // 1. Ingest initial customers list
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (): Promise<Customer[]> => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/customers');
       const data = await response.json();
       if (data.success) {
         setCustomers(data.customers);
+        return data.customers;
       }
     } catch (e) {
-      console.error('Failed to fetch initial customer records', e);
+      console.warn('Failed to fetch initial customer records, using local demo data', e);
+      setCustomers(INITIAL_CUSTOMERS);
+      return INITIAL_CUSTOMERS;
     } finally {
       setIsLoading(false);
     }
+
+    return INITIAL_CUSTOMERS;
   };
 
   // 2. Trigger server-side computational ML model evaluations
-  const runModelCalculations = async () => {
+  const runModelCalculations = async (dataset: Customer[]) => {
     setIsModelsLoading(true);
     try {
       const response = await fetch('/api/analyze-models', {
@@ -54,15 +63,30 @@ export default function App() {
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ customers: dataset }),
       });
       const data = await response.json();
       if (data.success) {
         setLogisticRegression(data.logisticRegression);
         setDecisionTree(data.decisionTree);
         setCorrelationMatrix(data.correlationMatrix);
+        return;
       }
     } catch (e) {
-      console.error('Failed to run backend models calculations', e);
+      console.warn('Failed to run backend models calculations, falling back to local training', e);
+    }
+
+    // Fallback to local calculations
+    try {
+      const lrResults = trainLogisticRegression(dataset, 0.15, 200);
+      const dtResults = trainDecisionTree(dataset, 3);
+      const correlation = calculateCorrelationMatrix(dataset);
+
+      setLogisticRegression(lrResults);
+      setDecisionTree(dtResults);
+      setCorrelationMatrix(correlation);
+    } catch (err) {
+      console.error('Local training fallback failed', err);
     } finally {
       setIsModelsLoading(false);
     }
@@ -71,8 +95,10 @@ export default function App() {
   // Triggered on first boot
   useEffect(() => {
     const initData = async () => {
-      await fetchCustomers();
-      await runModelCalculations();
+      const initialCustomers = await fetchCustomers();
+      if (initialCustomers.length > 0) {
+        await runModelCalculations(initialCustomers);
+      }
     };
     initData();
   }, []);
@@ -95,37 +121,41 @@ export default function App() {
       });
       const data = await response.json();
       if (data.success) {
-        setCustomers(data.customers);
-        // Automatically re-compute models against newly simulated variables instantly
-        await runModelCalculations();
+        const nextCustomers = data.customers;
+        setCustomers(nextCustomers);
+        // Automatically re-compute models against the newly simulated dataset.
+        await runModelCalculations(nextCustomers);
+        return;
       }
     } catch (e) {
-      console.error('Dynamic simulation failed', e);
-    } finally {
+      console.warn('Dynamic simulation failed, falling back to client-side simulation', e);
+    }
+
+    // Fallback to client-side simulation
+    try {
+      const nextCustomers = generateSimulatedDataset(
+        params.count,
+        params.complaintUrgency,
+        params.retentionDiscountRatio,
+        params.avgTenure
+      );
+      setCustomers(nextCustomers);
+      await runModelCalculations(nextCustomers);
+    } catch (err) {
+      console.error('Client-side simulation fallback failed', err);
       setIsLoading(false);
     }
   };
 
-  // 4. Connect with server-side Gemini Consultant API
+  // 4. Generate local cohort analytical advisory report
   const handleGenerateAIReport = async (systemPersona: string): Promise<string> => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/gemini/consultant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ systemPersona }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        setReportText(data.report);
-        return data.report;
-      } else {
-        throw new Error(data.error || 'Gemini response returned failure status.');
-      }
+      const report = generateAdvisoryReport(customers, systemPersona);
+      setReportText(report);
+      return report;
     } catch (e: any) {
-      console.error('Gemini call failed', e);
+      console.error('Report generation failed', e);
       throw e;
     } finally {
       setIsLoading(false);
@@ -153,7 +183,7 @@ export default function App() {
                 <span className="text-[10px] text-[#a1a1a1] font-mono">r-220303010074</span>
               </div>
               <h2 className="font-display font-bold text-white tracking-tight text-sm md:text-base break-words">
-                BSc Customer Retention Analytics Suite
+                Customer Retention Analysis Suite
               </h2>
             </div>
           </div>
@@ -284,7 +314,7 @@ export default function App() {
                 logisticRegression={logisticRegression}
                 decisionTree={decisionTree}
                 isLoading={isModelsLoading}
-                onRetrain={runModelCalculations}
+                onRetrain={() => runModelCalculations(customers)}
               />
             ) : (
               <div className="text-center py-24 text-[#a1a1a1] font-mono italic text-xs">Waiting for model calculations to complete...</div>
@@ -295,7 +325,7 @@ export default function App() {
         {/* Tab 5: AI Consultant */}
         {activeTab === 'ai' && (
           <AIConsultant 
-            onGenerateReport={handleGenerateAIReport}
+            onGenerateReport={(persona) => handleGenerateAIReport(persona)}
             reportText={reportText}
             isLoading={isLoading}
           />
